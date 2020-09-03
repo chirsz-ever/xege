@@ -1,13 +1,18 @@
 #include "graphics.h"
 #include <stdio.h>
 
-char installpath[8][MAX_PATH];
+char installpath[16][MAX_PATH];
 char g_output[1024 * 16];
 char strbasepath[] = "SOFTWARE\\";
-char ver[8][64] = { "Microsoft\\VisualStudio\\6.0\\Setup\\Microsoft Viaual C++",
+char ver[16][64] = { "Microsoft\\VisualStudio\\6.0\\Setup\\Microsoft Viaual C++",
     "Microsoft\\VisualStudio\\8.0\\Setup\\VC",
     "Microsoft\\VisualStudio\\9.0\\Setup\\VC",
     "Microsoft\\VisualStudio\\10.0\\Setup\\VC",
+    "Microsoft\\VisualStudio\\11.0\\Setup\\VC",
+    "Microsoft\\VisualStudio\\12.0\\Setup\\VC",
+    "Microsoft\\VisualStudio\\13.0\\Setup\\VC",
+    "Microsoft\\VisualStudio\\14.0\\Setup\\VC",
+    "Microsoft\\VisualStudio\\15.0\\Setup\\VC",
     "C-Free\\5",
 };
 
@@ -26,13 +31,13 @@ public:
         m_cr = 0.0;
         m_tt = random(10000) / 10000.0 * 16.0 + 4;
         m_zoom = 0.7 / m_tt;
-        pmira = new IMAGE(w, h);
+        pmira = newimage(w, h);
         m_w = w;
         m_h = h;
     }
     ~Mira()
     {
-        delete pmira;
+        delimage(pmira);
     }
     void drawpixel(double _x, double _y, int color)
     {
@@ -105,7 +110,8 @@ int info_scene()
     cleardevice();
     setcolor(0xFFFFFF);
     Mira mira(640, 300);
-    IMAGE imgtext(440, 130);
+    PIMAGE pimgtext = newimage(440, 130);
+    IMAGE& imgtext = *pimgtext;
     char infostr[] = "欢迎使用Easy Graphics Enginge (EGE) V0.3.8 ，本库是一个面向新手，或者面向快速图形程序开发的图形库，使用方便快捷，容易上手，特别适合于新手学习图形程序设计。本程序为安装程序，如果你要继续安装，请按'y'键继续";
     setcolor(0xFFFF, &imgtext);
     setfont(18, 0, "宋体", &imgtext);
@@ -118,14 +124,16 @@ int info_scene()
     setcolor(0xFF, &imgtext);
     outtextrect(5, 5, 440, 280, infostr, &imgtext);
 
-    BeginBatchDraw();
+    //BeginBatchDraw();
     for ( ; kbhit() == 0; delay_fps(60))
     {
         mira.update();
         mira.render(0, 480 - 300);
         putimage(100, 50, &imgtext);
     }
-    EndBatchDraw();
+    //EndBatchDraw();
+    delay_ms(0);
+    delimage(pimgtext);
     return getch();
 }
 
@@ -162,7 +170,7 @@ int getpath_scene()
     return getch();
 }
 
-int copyfile(char* path1, char* pathnew, char* dir,char* file)
+int copyfile(const char* path1, const char* pathnew, const char* dir, const char* file)
 {
     char strpath1[MAX_PATH];
     char strpath2[MAX_PATH];

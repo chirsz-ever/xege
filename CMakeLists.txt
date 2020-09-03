@@ -47,6 +47,8 @@ add_subdirectory(src)
 
 add_subdirectory(demo)
 
+add_subdirectory(tool)
+
 if (EXISTS ${PROJECT_SOURCE_DIR}/temp/CMakeLists.txt)
   add_subdirectory(temp)
 endif ()
